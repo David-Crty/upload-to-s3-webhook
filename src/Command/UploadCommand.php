@@ -2,6 +2,9 @@
 
 namespace App\Command;
 
+use App\Model\File;
+use App\ScanPath;
+use App\UploadToS3;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -31,8 +34,17 @@ class UploadCommand extends Command
      * @return int|void|null
      * @throws \Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output) :int
     {
-
+        $path = $input->getArgument('path');
+        $result = ScanPath::scan($path);
+        $upload = new UploadToS3();
+        
+        if($result instanceof File){
+            $upload->uploadFile($result, $result->getName());
+        }
+        
+        
+        return 0;
     }
 }

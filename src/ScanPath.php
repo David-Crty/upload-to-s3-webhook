@@ -9,29 +9,51 @@ use App\Model\Folder;
 
 class ScanPath
 {
-    private string $path;
-    
-    public function __construct(string $path)
-    {
-        $this->path = $path;
+    /**
+     * @param $path
+     * @return File|Folder
+     * @throws \Exception
+     */
+    public static function scan($path){
+        if (is_dir($path)) {
+            $folder = new Folder();
+            $folder->setName(basename($path));
+            self::dirToObject($path, $folder);
+            
+            return $folder;
+        }
+        if(is_file($path)){
+            $file = new File();
+            $file->setName(basename($path));
+            $file->setRealPath(realpath($path));
+            $file->setSize(filesize($path));
+            $file->setMineType(mime_content_type($path));
+            
+            return $file;
+        }
+        
+        throw new \Exception(sprintf('Can not find anything at %s', $path));
     }
     
-    public function dirToObject($dir, Folder $folderParent) {
-        $cdir = scandir($dir);
-        foreach ($cdir as $key => $value) {
+    public static function dirToObject($dir, Folder $folderParent) {
+        $scan = scandir($dir);
+        foreach ($scan as $key => $value) {
             if (!in_array($value, array(".", ".."))) {
                 $path = $dir . DIRECTORY_SEPARATOR . $value;
                 if (is_dir($path)) {
                     $folder = new Folder();
                     $folder->setName($value);
-                    $folder->setParent($folderParent);
-                    $this->dirToObject($path, $folder);
+                    if($folderParent){
+                        $folderParent->addFolder($folder);
+                    }
+                    self::dirToObject($path, $folder);
                 } else {
                     $file = new File();
                     $file->setName($value);
+                    $file->setRealPath(realpath($path));
                     $file->setSize(filesize($path));
                     $file->setMineType(mime_content_type($path));
-                    $file->setFolder($folderParent);
+                    $folderParent->addFile($file);
                 }
             }
         }

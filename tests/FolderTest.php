@@ -2,6 +2,8 @@
 
 use PHPUnit\Framework\TestCase;
 use App\Model\Folder;
+use App\ScanPath;
+use App\Model\File;
 
 final class FolderTest extends TestCase
 {
@@ -34,6 +36,40 @@ final class FolderTest extends TestCase
     }
     
     public function testFolderScan(){
+        $folder = ScanPath::scan(__DIR__ . DIRECTORY_SEPARATOR.'folder');
+        $this->assertEquals(
+            'folder/',
+            $folder->getFullPath()
+        );
     
+        $this->assertEquals(
+            2,
+            $folder->getFolders()->count()
+        );
+        
+        /** @var File $firstFile */
+        $firstFile = $folder->getFiles()->first();
+        $this->assertEquals(
+            'test.txt',
+            $firstFile->getName()
+        );
+        
+        /** @var Folder $firstFolder */
+        $firstFolder = $folder->getFolders()->first();
+        $this->assertEquals(
+            'folder/a folder/',
+            $firstFolder->getFullPath()
+        );
+        
+        /** @var Folder $subFolder */
+        $subFolder = $firstFolder->getFolders()->first();
+        $this->assertEquals(
+            'folder/a folder/sub folder/',
+            $subFolder->getFullPath()
+        );
+        $this->assertEquals(
+            2,
+            $subFolder->getFiles()->count()
+        );
     }
 }
