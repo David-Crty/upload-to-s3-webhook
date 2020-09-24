@@ -1,0 +1,27 @@
+{
+  "name": "david-crty/upload-to-s3-webhook",
+  "description": "Allow you to upload folders files to s3 and trigger a webkook containing all upload infos",
+  "type": "cli",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "David Courtey",
+      "email": "david.courtey@awstudio.fr"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/"
+    }
+  },
+  "require": {
+    "php": "^7.4",
+    "symfony/console": "^5.1",
+    "ext-fileinfo": "*",
+    "doctrine/collections": "^1.6"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9",
+    "symfony/var-dumper": "^5.1"
+  }
+}
