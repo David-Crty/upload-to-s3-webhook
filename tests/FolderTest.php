@@ -37,6 +37,7 @@ final class FolderTest extends TestCase
     
     public function testFolderScan(){
         $folder = ScanPath::scan(__DIR__ . DIRECTORY_SEPARATOR.'folder');
+        dump($folder);
         $this->assertEquals(
             'folder/',
             $folder->getFullPath()
