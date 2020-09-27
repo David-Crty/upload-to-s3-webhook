@@ -129,4 +129,24 @@ class Folder
     
         return $parentPath.$this->getName();
     }
+    
+    /**
+     * @return File[]|ArrayCollection
+     */
+    public function getAllFiles()
+    {
+        $files = new ArrayCollection();
+        
+        foreach ($this->getFiles() as $file){
+            $files->add($file);
+        }
+    
+        foreach ($this->getFolders() as $folder){
+            $files = new ArrayCollection(
+                array_merge($files->toArray(), $folder->getAllFiles()->toArray())
+            );
+        }
+        
+        return $files;
+    }
 }

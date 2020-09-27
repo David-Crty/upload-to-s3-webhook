@@ -72,4 +72,38 @@ final class FolderTest extends TestCase
             $subFolder->getFiles()->count()
         );
     }
+    
+    public function testAllFiles(){
+        $mainFolder = new Folder();
+        $mainFolder->setName('main folder');
+        
+        $subFolder = new Folder();
+        $subFolder->setName('sub folder');
+        $mainFolder->addFolder($subFolder);
+        
+        $subSubFolder = new Folder();
+        $subSubFolder->setName('sub sub folder');
+        $subFolder->addFolder($subSubFolder);
+        
+        $file = new File();
+        $file->setName('my-file-1');
+        $mainFolder->addFile($file);
+        
+        $file = new File();
+        $file->setName('my-file-2');
+        $mainFolder->addFile($file);
+        
+        $file = new File();
+        $file->setName('my-file-3');
+        $subFolder->addFile($file);
+        
+        $file = new File();
+        $file->setName('my-file-4');
+        $subSubFolder->addFile($file);
+    
+        $this->assertEquals(
+            4,
+            $mainFolder->getAllFiles()->count()
+        );
+    }
 }

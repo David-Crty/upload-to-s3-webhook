@@ -98,7 +98,7 @@ class File
     public function getPath(){
         $path = '';
         if($this->getFolder()){
-            $path .= $this->getFolder()->getPath();
+            $path .= $this->getFolder()->getFullPath();
         }
         
         return $path.$this->getName();
@@ -120,11 +120,12 @@ class File
         $this->s3Key = $s3Key;
     }
     
-    public function generateS3Key($mainFolder){
+    public function generateS3Key($mainFolder, $uid = null){
         $slugify = new Slugify();
         $start = trim(substr($slugify->slugify($mainFolder),0,20), '-');
         $end = trim(substr($slugify->slugify($this->getName()),0,20), '-');
-        $this->setS3Key($start.'/'.$end.'_'.uniqid());
+        $uid = ($uid) ? $uid : uniqid();
+        $this->setS3Key($start.'/'.$end.'_'.$uid);
         
         return $this->getS3Key();
     }

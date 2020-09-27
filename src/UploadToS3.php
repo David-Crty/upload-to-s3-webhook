@@ -4,6 +4,7 @@
 namespace App;
 
 
+use App\Helper\Env;
 use App\Model\File;
 use Aws\S3\MultipartUploader;
 use Aws\S3\S3Client;
@@ -16,7 +17,12 @@ class UploadToS3
         if(!$this->client){
             $this->client = new S3Client([
                 'version' => 'latest',
-                'region'  => 'us-west-2'
+                'region'  => Env::get('AWS_REGION'),
+                'endpoint' => Env::get('AWS_ENDPOINT'),
+                'credentials' => [
+                    'key'    => Env::get('AWS_ID'),
+                    'secret' => Env::get('AWS_PRIVATE'),
+                ],
             ]);
         }
         
@@ -34,7 +40,7 @@ class UploadToS3
             'concurrency' => 2,
             'part_size' => 100000000, // 100 Mo
             'before_initiate' => function (\Aws\Command $command) use ($file) {
-                $command['ContentType'] = mime_content_type($file->getPath());
+                $command['ContentType'] = $file->getMineType();
                 $command['ContentDisposition'] = $this->getContentDisposition($file);
             },
         ]);
