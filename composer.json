@@ -30,6 +30,6 @@
   },
   "scripts": {
     "test": "phpunit",
-    "build": "vendor/bin/box build"
+    "compile": "vendor/bin/box compile"
   }
 }

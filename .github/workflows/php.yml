@@ -40,10 +40,10 @@ jobs:
       run: composer bin box require --dev humbug/box
 
     - name: Build phar
-      run: composer run-script build
+      run: composer run-script compile
 
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2
       with:
           name: phar-artifact
-          path: upload-to-s3-wenhook.phar
+          path: ./upload-to-s3-webhook.phar
