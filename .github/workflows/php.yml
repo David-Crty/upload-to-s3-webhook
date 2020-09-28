@@ -35,3 +35,15 @@ jobs:
 
     - name: Run test suite
       run: composer run-script test
+
+    - name: Install box
+      run: composer bin box require --dev humbug/box
+
+    - name: Build phar
+      run: composer run-script build
+
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2
+      with:
+          name: phar-artifact
+          path: upload-to-s3-wenhook.phar

@@ -1,4 +1,6 @@
 /vendor/
+/vendor-bin/
 .idea
 .phpunit.result.cache
 .env.local
+upload-to-s3-webhook.phar
