@@ -1,4 +1,4 @@
-# Upload to S3 webhook
+# Upload to S3 webhook ![PHP Test](https://github.com/David-Crty/upload-to-s3-webhook/workflows/PHP%20Test/badge.svg)
 
 ## Goal
 Allow you to upload folders files to s3 and trigger a webkook containing all upload infos
