@@ -5,14 +5,32 @@ namespace App\Model;
 
 
 use Cocur\Slugify\Slugify;
+use Symfony\Component\Serializer\Annotation\Groups;
 
-class File
+class File implements ResourceInterface
 {
+    /**
+     * @Groups({"main_webhook"})
+     */
     protected string $name;
+    /**
+     * @Groups({"main_webhook"})
+     */
     protected string $realPath;
+    /**
+     * @Groups({"main_webhook"})
+     */
     protected int $size;
+    /**
+     * @Groups({"main_webhook"})
+     */
     protected string $mineType;
+    
     protected ?Folder $folder = null;
+    
+    /**
+     * @Groups({"main_webhook"})
+     */
     protected string $s3Key;
     
     /**
@@ -128,5 +146,10 @@ class File
         $this->setS3Key($start.'/'.$end.'_'.$uid);
         
         return $this->getS3Key();
+    }
+    
+    public function toArray(): array
+    {
+        // TODO: Implement toArray() method.
     }
 }

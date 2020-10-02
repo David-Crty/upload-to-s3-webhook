@@ -6,13 +6,11 @@ use App\Model\File;
 use App\Model\Folder;
 use App\ScanPath;
 use App\UploadToS3;
+use App\WebHook;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\Output;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Helper\ProgressBar;
 
 /**
@@ -41,6 +39,7 @@ class UploadCommand extends Command
         $path = $input->getArgument('path');
         $result = ScanPath::scan($path);
         $upload = new UploadToS3();
+        $webHook = new WebHook();
         
         if($result instanceof File){
             $upload->uploadFile($result, $result->getName());
@@ -56,6 +55,7 @@ class UploadCommand extends Command
             $progressBar->finish();
         }
         
+        $webHook->call($result);
         
         return 0;
     }

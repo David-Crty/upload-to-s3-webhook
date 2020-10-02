@@ -6,12 +6,13 @@ namespace App;
 
 use App\Model\File;
 use App\Model\Folder;
+use App\Model\ResourceInterface;
 
 class ScanPath
 {
     /**
      * @param $path
-     * @return File|Folder
+     * @return ResourceInterface
      * @throws \Exception
      */
     public static function scan($path){

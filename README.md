@@ -1,92 +1,152 @@
 # Upload to S3 webhook ![PHP Test](https://github.com/David-Crty/upload-to-s3-webhook/workflows/PHP%20Test/badge.svg)
 
 ## Goal
-Allow you to upload folders files to s3 and trigger a webkook containing all upload infos
+Allow you to upload folders & files to s3 and trigger a webkook containing all upload infos
 
 
 ## Installation
 
-1. [PHAR](#phar)
-1. [Phive](#phive)
-1. [Composer](#composer)
-### PHAR
-
-The preferred method of installation is to use the Box PHAR which can be downloaded from the most recent
-[Github Release][releases]. This method ensures you will not have any dependency conflict issue.
-
-
-### Phive
-
-You can install Box with [Phive][phive]
-
 ```bash
-$ phive install humbug/box --force-accept-unsigned
+git clone https://github.com/David-Crty/upload-to-s3-webhook
+composer install
 ```
 
-To upgrade `box` use the following command:
+## Use
+Create a .env.local to overright the env values :
+```text
+AWS_REGION=eu-central-1
+AWS_ID= XXX
+AWS_PRIVATE= XXX
+WEBHOOK_ENDPOINT=https://my-site.com/upload-webhook
+``` 
+Than execute script like this
 
 ```bash
-$ phive update humbug/box --force-accept-unsigned
+bin/main upload ./composer.json
 ```
+Will upload file to s3 and call webhook with POST application/json
+```json
+{
+  "name": "composer.lock",
+  "realPath": "/home/david/Sites/op-serv/upload-to-s3-webhook/composer.lock",
+  "size": 147130,
+  "mineType": "text/plain",
+  "s3Key": "composer-lock/composer-lock_5f776fa525f36"
+}
+```
+---
+```bash
+bin/main upload ./src
+```
+Will upload src folder to s3 and call webhook with POST application/json
+```json
+{
+  "name": "src",
+  "files": [
+    {
+      "name": "ScanPath.php",
+      "realPath": "/home/david/Sites/op-serv/upload-to-s3-webhook/src/ScanPath.php",
+      "size": 1813,
+      "mineType": "text/x-php",
+      "s3Key": "src/scanpath-php_5f776dc1b0fd3"
+    },
+    {
+      "name": "Serializer.php",
+      "realPath": "/home/david/Sites/op-serv/upload-to-s3-webhook/src/Serializer.php",
+      "size": 965,
+      "mineType": "text/x-php",
+      "s3Key": "src/serializer-php_5f776dc2c33be"
+    },
+    {
+      "name": "UploadToS3.php",
+      "realPath": "/home/david/Sites/op-serv/upload-to-s3-webhook/src/UploadToS3.php",
+      "size": 1395,
+      "mineType": "text/x-php",
+      "s3Key": "src/uploadtos3-php_5f776dc3aa07e"
+    },
+    {
+      "name": "WebHook.php",
+      "realPath": "/home/david/Sites/op-serv/upload-to-s3-webhook/src/WebHook.php",
+      "size": 855,
+      "mineType": "text/x-php",
+      "s3Key": "src/webhook-php_5f776dc5c8472"
+    },
+    {
+      "name": "bootstrap.php",
+      "realPath": "/home/david/Sites/op-serv/upload-to-s3-webhook/src/bootstrap.php",
+      "size": 1203,
+      "mineType": "text/x-php",
+      "s3Key": "src/bootstrap-php_5f776dc6cd606"
+    }
+  ],
+  "folders": [
+    {
+      "name": "Command",
+      "files": [
+        {
+          "name": "UploadCommand.php",
+          "realPath": "/home/david/Sites/op-serv/upload-to-s3-webhook/src/Command/UploadCommand.php",
+          "size": 1903,
+          "mineType": "text/x-php",
+          "s3Key": "src/uploadcommand-php_5f776dc7c3244"
+        }
+      ],
+      "folders": []
+    },
+    {
+      "name": "Helper",
+      "files": [
+        {
+          "name": "Env.php",
+          "realPath": "/home/david/Sites/op-serv/upload-to-s3-webhook/src/Helper/Env.php",
+          "size": 199,
+          "mineType": "text/x-php",
+          "s3Key": "src/env-php_5f776dc8b6bb1"
+        }
+      ],
+      "folders": []
+    },
+    {
+      "name": "Model",
+      "files": [
+        {
+          "name": "File.php",
+          "realPath": "/home/david/Sites/op-serv/upload-to-s3-webhook/src/Model/File.php",
+          "size": 2907,
+          "mineType": "text/x-php",
+          "s3Key": "src/file-php_5f776dc9c1b09"
+        },
+        {
+          "name": "Folder.php",
+          "realPath": "/home/david/Sites/op-serv/upload-to-s3-webhook/src/Model/Folder.php",
+          "size": 3651,
+          "mineType": "text/x-php",
+          "s3Key": "src/folder-php_5f776dcaafb78"
+        },
+        {
+          "name": "ResourceInterface.php",
+          "realPath": "/home/david/Sites/op-serv/upload-to-s3-webhook/src/Model/ResourceInterface.php",
+          "size": 99,
+          "mineType": "text/x-php",
+          "s3Key": "src/resourceinterface-ph_5f776dcc182cc"
+        }
+      ],
+      "folders": []
+    }
+  ]
+}
+```
+## Test
 
-
-### Composer
-
-You can install with [Composer][composer]:
+You can test it with phpunit
 
 ```bash
-$ composer global require humbug/box
+phpunit
 ```
-
-## Homebrew
-
-To install box using [Homebrew](https://brew.sh), you need to tap the box formula first
-
+## Box Build
+You also can build a phar with box
 ```bash
-$ brew tap humbug/box
-$ brew install box
-```
-
-The `box` command is now available to run from anywhere in the system:
-
-```bash
-$ box -v
-```
-
-To upgrade `box` use the following command:
-
-```bash
-$ brew upgrade box
-```
-
-<br />
-<hr />
-
-« [Table of Contents](../README.md#table-of-contents) • [Configuration](configuration.md#configuration) »
-
-
-[releases]: https://github.com/humbug/box/releases
-[composer]: https://getcomposer.org
-[bamarni/composer-bin-plugin]: https://github.com/bamarni/composer-bin-plugin
-[phive]: https://github.com/phar-io/phive
-
-Install box to be able to build the phar cli https://github.com/box-project/box/blob/master/doc/installation.md#installation
-
-Run composer install to install dependency
-```bash
-$ composer install
-```
-
-Update the `php.ini` of php cli (eg: `/etc/php/7.4/cli/php.ini`) to allow phar to edit files
-```ini
-[Phar]
-; http://php.net/phar.readonly
-phar.readonly = Off
-```
-
-Then build and move the simple-dot.phar file to you /usr/local/bin
-```bash
-$ box build && \
-  chmod +x ./upload-to-s3-webhook.phar.phar && \
-  sudo mv ./upload-to-s3-webhook.phar.phar /usr/local/bin/upload-to-s3-webhook.phar
+$ composer run compile && \
+  chmod +x ./upload-to-s3-webhook.phar && \
+  sudo mv ./upload-to-s3-webhook.phar /usr/local/bin/upload-to-s3-webhook.phar
 ```

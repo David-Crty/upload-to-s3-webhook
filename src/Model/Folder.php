@@ -5,17 +5,27 @@ namespace App\Model;
 
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
-class Folder
+class Folder implements ResourceInterface
 {
+    /**
+     * @Groups({"main_webhook"})
+     */
     private string $name;
     
     private ?Folder $parent = null;
     
-    /** @var ArrayCollection|File[] */
+    /**
+     * @var ArrayCollection|File[]
+     * @Groups({"main_webhook"})
+     */
     private ArrayCollection $files;
     
-    /** @var ArrayCollection|Folder[] */
+    /**
+     * @var ArrayCollection|Folder[]
+     * @Groups({"main_webhook"})
+     */
     private ArrayCollection $folders;
     
     public function __construct(){
@@ -148,5 +158,10 @@ class Folder
         }
         
         return $files;
+    }
+    
+    public function toArray(): array
+    {
+        // TODO: Implement toArray() method.
     }
 }

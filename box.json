@@ -7,7 +7,6 @@
             "in": "vendor"
         }
     ],
-    "stub": true,
     "main": "bin/main",
     "output": "upload-to-s3-webhook.phar"
 }
