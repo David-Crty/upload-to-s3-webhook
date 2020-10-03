@@ -5,24 +5,49 @@ Allow you to upload folders & files to s3 and trigger a webkook containing all u
 
 
 ## Installation
+#### Docker run
+```bash
+docker run --rm  \
+    -v ~/my-local-folder:/upload \
+    -e AWS_REGION=eu-central-1 \
+    -e AWS_ID=XXX \
+    -e AWS_PRIVATE=XXX \
+    -e AWS_BUCKET=XXX \
+    -e WEBHOOK_ENDPOINT=https://my-host.com/webhook \
+    upload-s3 upload-to-s3-webhook upload /upload
+```
+___
+#### Cloning repo & build phar
 
 ```bash
 git clone https://github.com/David-Crty/upload-to-s3-webhook
 composer install
 ```
-
-## Use
 Create a .env.local to overright the env values :
 ```text
 AWS_REGION=eu-central-1
-AWS_ID= XXX
-AWS_PRIVATE= XXX
-WEBHOOK_ENDPOINT=https://my-site.com/upload-webhook
+AWS_ID=XXX
+AWS_PRIVATE=XXX
+AWS_BUCKET=XXX
+WEBHOOK_ENDPOINT=https://my-host.com/webhook
 ``` 
-Than execute script like this
+##### Build phar (optional, you can just use ./bin/main upload)
+(maybe you need to update the php.ini of php cli (eg: /etc/php/7.4/cli/php.ini) to allow phar to edit files)
+```text
+[Phar]
+; http://php.net/phar.readonly
+phar.readonly = Off
+```
+```bash
+composer run compile
+```
+
+
+## Use
+Execute script like this
 
 ```bash
-bin/main upload ./composer.json
+./upload-to-s3-webhook.phar upload ./composer.json
 ```
 Will upload file to s3 and call webhook with POST application/json
 ```json
@@ -36,7 +61,7 @@ Will upload file to s3 and call webhook with POST application/json
 ```
 ---
 ```bash
-bin/main upload ./src
+./upload-to-s3-webhook.phar upload ./src
 ```
 Will upload src folder to s3 and call webhook with POST application/json
 ```json
@@ -142,11 +167,4 @@ You can test it with phpunit
 
 ```bash
 phpunit
-```
-## Box Build
-You also can build a phar with box
-```bash
-$ composer run compile && \
-  chmod +x ./upload-to-s3-webhook.phar && \
-  sudo mv ./upload-to-s3-webhook.phar /usr/local/bin/upload-to-s3-webhook.phar
 ```

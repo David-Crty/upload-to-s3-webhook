@@ -45,6 +45,8 @@ class UploadCommand extends Command
             $upload->uploadFile($result, $result->getName());
         }
         
+        
+        
         if($result instanceof Folder){
             $allFiles = $result->getAllFiles();
             $progressBar = new ProgressBar($output, $allFiles->count());

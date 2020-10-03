@@ -15,15 +15,20 @@ class UploadToS3
     
     private function getClient(){
         if(!$this->client){
-            $this->client = new S3Client([
+            $options = [
                 'version' => 'latest',
                 'region'  => Env::get('AWS_REGION'),
-                'endpoint' => Env::get('AWS_ENDPOINT'),
                 'credentials' => [
                     'key'    => Env::get('AWS_ID'),
                     'secret' => Env::get('AWS_PRIVATE'),
                 ],
-            ]);
+            ];
+            
+            if(Env::get('AWS_ENDPOINT')){
+                $options['endpoint'] = Env::get('AWS_ENDPOINT');
+            }
+            
+            $this->client = new S3Client($options);
         }
         
         return $this->client;
@@ -35,7 +40,7 @@ class UploadToS3
     
     public function uploadFile(File $file, $mainFolder){
         $uploader = new MultipartUploader($this->getClient(), $file->getRealPath(), [
-            'bucket' => 'op-serv',
+            'bucket' => Env::get('AWS_BUCKET'),
             'key' => $file->generateS3Key($mainFolder),
             'concurrency' => 2,
             'part_size' => 100000000, // 100 Mo
