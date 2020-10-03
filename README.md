@@ -14,7 +14,7 @@ docker run --rm  \
     -e AWS_PRIVATE=XXX \
     -e AWS_BUCKET=XXX \
     -e WEBHOOK_ENDPOINT=https://my-host.com/webhook \
-    upload-s3 upload-to-s3-webhook upload /upload
+    davidcrty/uptoload-to-s3-webhook:latest upload-to-s3-webhook upload /upload
 ```
 ___
 #### Cloning repo & build phar

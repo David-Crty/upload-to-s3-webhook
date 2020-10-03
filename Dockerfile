@@ -1,5 +1,7 @@
 FROM php:7.4-cli
 
+RUN apt update &&  apt-get install --yes zlib1g-dev libzip-dev
+RUN docker-php-ext-install zip
 # Installing composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
