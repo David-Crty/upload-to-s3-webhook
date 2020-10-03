@@ -7,6 +7,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 # Copy app files
 COPY . /app
+WORKDIR /app
 
 # Build the phar and add it /usr/local/bin
 RUN cd /app && composer install && \
