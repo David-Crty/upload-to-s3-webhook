@@ -15,7 +15,7 @@
     }
   },
   "require": {
-    "php": "^7.4",
+    "php": "^7.3",
     "symfony/console": "^5.1",
     "ext-fileinfo": "*",
     "ext-xml": "*",
