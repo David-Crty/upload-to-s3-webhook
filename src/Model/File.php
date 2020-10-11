@@ -26,7 +26,7 @@ class File implements ResourceInterface
      */
     protected $mineType;
     
-    protected ?Folder $folder = null;
+    protected $folder = null;
     
     /**
      * @Groups({"main_webhook"})
