@@ -12,26 +12,26 @@ class File implements ResourceInterface
     /**
      * @Groups({"main_webhook"})
      */
-    protected string $name;
+    protected $name;
     /**
      * @Groups({"main_webhook"})
      */
-    protected string $realPath;
+    protected $realPath;
     /**
      * @Groups({"main_webhook"})
      */
-    protected int $size;
+    protected $size;
     /**
      * @Groups({"main_webhook"})
      */
-    protected string $mineType;
+    protected $mineType;
     
     protected ?Folder $folder = null;
     
     /**
      * @Groups({"main_webhook"})
      */
-    protected string $s3Key;
+    protected $s3Key;
     
     /**
      * @return string

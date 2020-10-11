@@ -12,21 +12,21 @@ class Folder implements ResourceInterface
     /**
      * @Groups({"main_webhook"})
      */
-    private string $name;
+    private $name;
     
-    private ?Folder $parent = null;
+    private $parent = null;
     
     /**
      * @var ArrayCollection|File[]
      * @Groups({"main_webhook"})
      */
-    private ArrayCollection $files;
+    private $files;
     
     /**
      * @var ArrayCollection|Folder[]
      * @Groups({"main_webhook"})
      */
-    private ArrayCollection $folders;
+    private $folders;
     
     public function __construct(){
         $this->files = new ArrayCollection();

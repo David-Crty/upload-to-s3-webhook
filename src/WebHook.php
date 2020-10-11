@@ -11,7 +11,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class WebHook
 {
-    private HttpClientInterface $client;
+    private $client;
     
     public function __construct()
     {
