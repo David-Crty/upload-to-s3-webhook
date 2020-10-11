@@ -37,7 +37,8 @@ class UploadToS3
     }
     
     private function getContentDisposition(File $file){
-        return 'attachment; filename="'.$file->getName().'"';
+        $filename = mb_convert_encoding($file->getName(), "US-ASCII");
+        return 'attachment; filename="'.$filename.'"';
     }
     
     /**
@@ -48,12 +49,18 @@ class UploadToS3
     public function uploadFile(File $file, $mainFolder){
         $source = fopen($file->getRealPath(), 'rb');
         $key = $file->generateS3Key($mainFolder);
+        $before = function (\Aws\Command $command) use ($file) {
+            $command['ContentType'] = $file->getMineType();
+            $command['ContentDisposition'] = $this->getContentDisposition($file);
+        };
         
         $uploader = new ObjectUploader(
             $this->getClient(),
             Env::get('AWS_BUCKET'),
             $key,
-            $source
+            $source,
+            'private',
+            ['before_upload' => $before]
         );
     
         do {
@@ -70,10 +77,7 @@ class UploadToS3
                     'key' => $file->generateS3Key($mainFolder),
                     'concurrency' => 2,
                     'part_size' => 100000000, // 100 Mo
-                    'before_initiate' => function (\Aws\Command $command) use ($file) {
-                        $command['ContentType'] = $file->getMineType();
-                        $command['ContentDisposition'] = $this->getContentDisposition($file);
-                    },
+                    'before_initiate' => $before,
                 ]);
             }
         } while (!isset($result));
