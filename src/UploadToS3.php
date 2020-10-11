@@ -6,8 +6,10 @@ namespace App;
 
 use App\Helper\Env;
 use App\Model\File;
+use Aws\Exception\MultipartUploadException;
 use Aws\S3\MultipartUploader;
 use Aws\S3\S3Client;
+use Aws\S3\ObjectUploader;
 
 class UploadToS3
 {
@@ -38,18 +40,42 @@ class UploadToS3
         return 'attachment; filename="'.$file->getName().'"';
     }
     
+    /**
+     * From https://docs.aws.amazon.com/fr_fr/sdk-for-php/v3/developer-guide/s3-multipart-upload.html
+     * @param File $file
+     * @param $mainFolder
+     */
     public function uploadFile(File $file, $mainFolder){
-        $uploader = new MultipartUploader($this->getClient(), $file->getRealPath(), [
-            'bucket' => Env::get('AWS_BUCKET'),
-            'key' => $file->generateS3Key($mainFolder),
-            'concurrency' => 2,
-            'part_size' => 100000000, // 100 Mo
-            'before_initiate' => function (\Aws\Command $command) use ($file) {
-                $command['ContentType'] = $file->getMineType();
-                $command['ContentDisposition'] = $this->getContentDisposition($file);
-            },
-        ]);
+        $source = fopen($file->getRealPath(), 'rb');
+        $key = $file->generateS3Key($mainFolder);
+        
+        $uploader = new ObjectUploader(
+            $this->getClient(),
+            Env::get('AWS_BUCKET'),
+            $key,
+            $source
+        );
     
-        $uploader->upload();
+        do {
+            try {
+                $result = $uploader->upload();
+                if ($result["@metadata"]["statusCode"] == '200') {
+                    // print('<p>File successfully uploaded to ' . $result["ObjectURL"] . '.</p>');
+                }
+            } catch (MultipartUploadException $e) {
+                rewind($source);
+                $uploader = new MultipartUploader($this->getClient(), $source, [
+                    'state' => $e->getState(),
+                    'bucket' => Env::get('AWS_BUCKET'),
+                    'key' => $file->generateS3Key($mainFolder),
+                    'concurrency' => 2,
+                    'part_size' => 100000000, // 100 Mo
+                    'before_initiate' => function (\Aws\Command $command) use ($file) {
+                        $command['ContentType'] = $file->getMineType();
+                        $command['ContentDisposition'] = $this->getContentDisposition($file);
+                    },
+                ]);
+            }
+        } while (!isset($result));
     }
 }
